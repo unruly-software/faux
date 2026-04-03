@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`errors > internal config validation > should throw if cursorIncrease is negative 1`] = `"cursorIncrease must be a positive number"`;
+
+exports[`errors > internal config validation > should throw if cursorIncrease is not a number 1`] = `"cursorIncrease must be a number"`;
+
+exports[`errors > internal config validation > should throw if cursorIncrease is not positive 1`] = `"cursorIncrease cannot be 0 as it would cause cursor value overlaps"`;
+
+exports[`errors > internal config validation > should throw if getSharedValue is not a function 1`] = `"getSharedValue must be a function"`;
+
+exports[`errors > internal config validation > should throw if override is not an object 1`] = `"override must be an object"`;
+
+exports[`errors > internal config validation > should throw if seed is greater than Number.MAX_SAFE_INTEGER 1`] = `"Seed must be less than or equal to 9007199254740991"`;
+
+exports[`errors > internal config validation > should throw if seed is less than 1 1`] = `"Seed must be a non-negative number"`;
+
+exports[`errors > internal config validation > should throw if seed is not a number 1`] = `"Seed must be an integer"`;
+
+exports[`errors > internal config validation > should throw if seed is not an integer 1`] = `"Seed must be an integer"`;
+
+exports[`errors > internal config validation > should throw if sharedOverride is not an object 1`] = `"override.shared must be an object"`;

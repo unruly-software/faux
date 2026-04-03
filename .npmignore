@@ -1,0 +1,34 @@
+# Documentation and development files
+docs/
+*.md
+!README.md
+
+# Test files
+test/
+tests/
+**/*.test.*
+**/*.spec.*
+
+# Development configuration
+.github/
+.vscode/
+.idea/
+*.config.js
+*.config.ts
+vitest.config.ts
+tsconfig.json
+.eslintrc.*
+.editorconfig
+.nvmrc
+.yarnrc.yml
+
+# Coverage reports
+coverage/
+
+# Source files (only ship built files)
+src/
+
+# Yarn files
+.yarn/
+yarn.lock
+.pnp.*

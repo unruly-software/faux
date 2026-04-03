@@ -1,7 +1,17 @@
-# @unruly-software/faux
+<div align="center">
+  <img src="https://github.com/unruly-software/faux/blob/master/docs/logo.png" alt="@unruly-software/faux" width="500">
+</div>
 
+<div align="center">
+
+[![Build Status](https://github.com/unruly-software/faux/actions/workflows/build.yml/badge.svg)](https://github.com/unruly-software/faux/actions/workflows/build.yml)
 [![npm version](https://badge.fury.io/js/@unruly-software%2Ffaux.svg)](https://www.npmjs.com/package/@unruly-software/faux)
 [![Coverage Status](https://coveralls.io/repos/github/unruly-software/faux/badge.svg?branch=master)](https://coveralls.io/github/unruly-software/faux?branch=master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-LTS-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+
+</div>
 
 A powerful fixture generation library for testing that provides deterministic,
 customizable test data through dependency injection and isolated cursor

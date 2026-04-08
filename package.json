@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "type": "module",
+  "description": "A powerful fixture generation library for testing that provides deterministic, customizable test data through dependency injection and isolated seed management.",
   "scripts": {
     "build": "yarn tsc --noEmit && microbundle",
     "build:watch": "yarn tsc --noEmit --watch",

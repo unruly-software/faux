@@ -1,16 +1,18 @@
 import { DefinitionRegistry } from './DefinitionRegistry'
 import { ModelContextFactory } from './ModelContextFactory'
-import { ModelDefinition } from './types'
+import { ModelDefinition, ModelOverrideValue } from './types'
 import { FauxError } from './validation'
 
 type ModelsConfig = Record<string, ModelDefinition<any, any, any>>
 type ResolverOverrides<TModels extends ModelsConfig = ModelsConfig> = {
-  [K in keyof TModels]?: Partial<
-    TModels[K] extends ModelDefinition<any, infer TData, any>
-      ? TData
-      : Record<string, unknown>
+  [K in keyof TModels]?: TModels[K] extends ModelDefinition<
+    any,
+    infer TData,
+    any
   >
-} & Record<string, Record<string, unknown>>
+    ? ModelOverrideValue<TData, any>
+    : ModelOverrideValue<Record<string, unknown>, any>
+} & Record<string, ModelOverrideValue<any, any>>
 
 export class ModelResolver {
   private nameToInstanceCache = new Map<string, any>()
@@ -49,10 +51,16 @@ export class ModelResolver {
     this.resolvingNames.add(modelName)
 
     try {
-      let data = model.factory(this.context.getContextFor(modelName, this))
+      const modelContext = this.context.getContextFor(modelName, this)
+      let data = model.factory(modelContext)
 
       if (this.overrides[modelName]) {
-        data = { ...data, ...this.overrides[modelName] }
+        const override = this.overrides[modelName]
+        const partial =
+          typeof override === 'function'
+            ? override(data, modelContext)
+            : override
+        data = { ...data, ...partial }
       }
 
       const result = model.transform ? model.transform(data) : data

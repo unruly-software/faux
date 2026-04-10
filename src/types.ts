@@ -52,6 +52,11 @@ export type ModelFactory<
 
 export type ModelTransform<TData, TResult> = (data: TData) => TResult
 
+export type ModelOverrideValue<
+  TData,
+  TContext extends ModelContext<any, any>,
+> = Partial<TData> | ((initial: TData, ctx: TContext) => Partial<TData>)
+
 export interface ModelDefinition<
   TContext extends ModelContext<any, any>,
   TData,
@@ -84,7 +89,8 @@ export interface FixtureFactory<
 > {
   (options?: FixtureOptions<TModels, TShared, THelpers>): FixtureResult<
     TModels,
-    TShared
+    TShared,
+    THelpers
   >
   defineNamedCases<
     TCases extends Record<
@@ -94,7 +100,7 @@ export interface FixtureFactory<
   >(
     cases: TCases,
     defaults?: Partial<FixtureOptions<TModels, TShared, THelpers>>,
-  ): NamedCases<TCases, TModels, TShared>
+  ): NamedCases<TCases, TModels, TShared, THelpers>
 }
 
 export interface FixtureOptions<
@@ -105,9 +111,13 @@ export interface FixtureOptions<
   seed?: number
   cursorIncrease?: number
   override?: {
-    [K in keyof TModels]?: Partial<
-      TModels[K] extends ModelDefinition<any, infer TData, any> ? TData : never
+    [K in keyof TModels]?: TModels[K] extends ModelDefinition<
+      infer TCtx,
+      infer TData,
+      any
     >
+      ? ModelOverrideValue<TData, TCtx>
+      : never
   } & {
     shared?: Partial<TShared>
     helpers?: Partial<THelpers>
@@ -117,6 +127,7 @@ export interface FixtureOptions<
 export type FixtureResult<
   TModels extends Record<string, ModelDefinition<any, any, any>>,
   TShared = any,
+  THelpers extends HelpersConfig = any,
 > = {
   [K in keyof TModels]: TModels[K] extends ModelDefinition<
     any,
@@ -136,6 +147,7 @@ export type FixtureResult<
     ? TResult
     : never
   shared: TShared
+  helpers: HelperValues<THelpers>
 }
 
 export interface NamedCaseDefinition<
@@ -165,9 +177,12 @@ export interface NamedCases<
   use<K extends keyof TCases>(
     caseName: K,
     additionalOptions?: Partial<FixtureOptions<TModels, TShared, THelpers>>,
-  ): FixtureResult<TModels, TShared>
+  ): FixtureResult<TModels, TShared, THelpers>
   forEach<K extends keyof TCases, RT>(
     options: ForEachOptions<TCases>,
-    iterator: (caseName: K, fixtures: FixtureResult<TModels, TShared>) => RT,
+    iterator: (
+      caseName: K,
+      fixtures: FixtureResult<TModels, TShared, THelpers>,
+    ) => RT,
   ): RT[]
 }

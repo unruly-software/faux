@@ -1,5 +1,29 @@
-import { FixtureOptions, FixtureResult, ModelDefinition } from './types'
+import {
+  FixtureOptions,
+  FixtureResult,
+  ModelDefinition,
+  ModelOverrideValue,
+} from './types'
 import { FauxError } from './validation'
+
+function composeOverride(
+  prev: ModelOverrideValue<any, any> | undefined,
+  next: ModelOverrideValue<any, any> | undefined,
+): ModelOverrideValue<any, any> | undefined {
+  if (next === undefined) return prev
+  if (prev === undefined) return next
+
+  if (typeof prev !== 'function' && typeof next !== 'function') {
+    return { ...prev, ...next }
+  }
+
+  return (initial: any, ctx: any) => {
+    const prevPartial = typeof prev === 'function' ? prev(initial, ctx) : prev
+    const afterPrev = { ...initial, ...prevPartial }
+    const nextPartial = typeof next === 'function' ? next(afterPrev, ctx) : next
+    return { ...prevPartial, ...nextPartial }
+  }
+}
 
 export interface NamedCaseDefinition<
   TModels,
@@ -127,11 +151,7 @@ export class NamedCases<
             ...override.helpers,
           }
         } else {
-          /** Shallow merge models to allow keeping basic properties */
-          result[key] = {
-            ...result[key],
-            ...override[key],
-          }
+          result[key] = composeOverride(result[key], (override as any)[key])
         }
       }
     }

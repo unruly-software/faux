@@ -52,6 +52,11 @@ export type ModelFactory<
 
 export type ModelTransform<TData, TResult> = (data: TData) => TResult
 
+export type ModelOverrideValue<
+  TData,
+  TContext extends ModelContext<any, any>,
+> = Partial<TData> | ((initial: TData, ctx: TContext) => Partial<TData>)
+
 export interface ModelDefinition<
   TContext extends ModelContext<any, any>,
   TData,
@@ -105,9 +110,13 @@ export interface FixtureOptions<
   seed?: number
   cursorIncrease?: number
   override?: {
-    [K in keyof TModels]?: Partial<
-      TModels[K] extends ModelDefinition<any, infer TData, any> ? TData : never
+    [K in keyof TModels]?: TModels[K] extends ModelDefinition<
+      infer TCtx,
+      infer TData,
+      any
     >
+      ? ModelOverrideValue<TData, TCtx>
+      : never
   } & {
     shared?: Partial<TShared>
     helpers?: Partial<THelpers>

@@ -52,14 +52,14 @@ export class NamedCases<
   constructor(
     private fixtureFactory: (
       options?: FixtureOptions<TModels, TShared, THelpers>,
-    ) => FixtureResult<TModels, TShared>,
+    ) => FixtureResult<TModels, TShared, THelpers>,
     private cases: TCases,
     private defaults?: Partial<FixtureOptions<TModels, TShared, THelpers>>,
   ) {}
   use<K extends keyof TCases>(
     caseName: K,
     additionalOptions: Partial<FixtureOptions<TModels, TShared, THelpers>> = {},
-  ): FixtureResult<TModels, TShared> {
+  ): FixtureResult<TModels, TShared, THelpers> {
     const caseConfig = this.cases[caseName]
     if (!caseConfig) {
       throw new FauxError(
@@ -90,7 +90,10 @@ export class NamedCases<
   }
   forEach<K extends keyof TCases, RT>(
     options: ForEachOptions<TCases>,
-    iterator: (caseName: K, fixtures: FixtureResult<TModels, TShared>) => RT,
+    iterator: (
+      caseName: K,
+      fixtures: FixtureResult<TModels, TShared, THelpers>,
+    ) => RT,
   ): RT[] {
     const caseNames = Object.keys(this.cases) as K[]
 

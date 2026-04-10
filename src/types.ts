@@ -89,7 +89,8 @@ export interface FixtureFactory<
 > {
   (options?: FixtureOptions<TModels, TShared, THelpers>): FixtureResult<
     TModels,
-    TShared
+    TShared,
+    THelpers
   >
   defineNamedCases<
     TCases extends Record<
@@ -99,7 +100,7 @@ export interface FixtureFactory<
   >(
     cases: TCases,
     defaults?: Partial<FixtureOptions<TModels, TShared, THelpers>>,
-  ): NamedCases<TCases, TModels, TShared>
+  ): NamedCases<TCases, TModels, TShared, THelpers>
 }
 
 export interface FixtureOptions<
@@ -126,6 +127,7 @@ export interface FixtureOptions<
 export type FixtureResult<
   TModels extends Record<string, ModelDefinition<any, any, any>>,
   TShared = any,
+  THelpers extends HelpersConfig = any,
 > = {
   [K in keyof TModels]: TModels[K] extends ModelDefinition<
     any,
@@ -145,6 +147,7 @@ export type FixtureResult<
     ? TResult
     : never
   shared: TShared
+  helpers: HelperValues<THelpers>
 }
 
 export interface NamedCaseDefinition<
@@ -174,9 +177,12 @@ export interface NamedCases<
   use<K extends keyof TCases>(
     caseName: K,
     additionalOptions?: Partial<FixtureOptions<TModels, TShared, THelpers>>,
-  ): FixtureResult<TModels, TShared>
+  ): FixtureResult<TModels, TShared, THelpers>
   forEach<K extends keyof TCases, RT>(
     options: ForEachOptions<TCases>,
-    iterator: (caseName: K, fixtures: FixtureResult<TModels, TShared>) => RT,
+    iterator: (
+      caseName: K,
+      fixtures: FixtureResult<TModels, TShared, THelpers>,
+    ) => RT,
   ): RT[]
 }

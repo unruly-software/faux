@@ -26,7 +26,7 @@ const tenant = context.defineModel((ctx) => ({
   name: 'DefaultTenant',
   settings: {
     billing: true,
-    plan: 'basic' as const,
+    plan: 'basic' as 'basic' | 'premium',
     features: ['a', 'b'],
   },
 }))
@@ -112,6 +112,12 @@ describe('function overrides', () => {
 
     expect(f.user.name).toBe('tenant:uuid-1')
   })
+
+  it('should expose helpers on the fixture result', () => {
+    const f = fixtures({seed: 5})
+
+    expect(f.helpers.uuid).toBe('uuid-5')
+  })
 })
 
 describe('function overrides with named cases', () => {
@@ -121,7 +127,7 @@ describe('function overrides with named cases', () => {
       override: {
         user: {name: 'Admin'},
         tenant: (initial) => ({
-          settings: {...initial.settings, plan: 'premium' as const},
+          settings: {...initial.settings, plan: 'premium'},
         }),
       },
     },

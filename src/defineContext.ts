@@ -46,7 +46,7 @@ export function defineContext<THelpers extends HelpersConfig>(
     >(models: TModels) {
       const createFixtures = function (
         options?: FixtureOptions<TModels, any, THelpers>,
-      ): FixtureResult<TModels, any> {
+      ): FixtureResult<TModels, any, THelpers> {
         const internalConfig: InternalConfig = {
           seed: options?.seed ?? 1,
           cursorIncrease: options?.cursorIncrease ?? 1000,
@@ -92,7 +92,7 @@ export function defineContext<THelpers extends HelpersConfig>(
           contextFactory,
         )
 
-        const result = {} as FixtureResult<TModels>
+        const result = {} as FixtureResult<TModels, any, THelpers>
 
         /**
          * Getters are used to allow for lazy evaluation of models without needing
@@ -120,7 +120,13 @@ export function defineContext<THelpers extends HelpersConfig>(
         result.update = (modelName, model) => resolver.update(modelName, model)
 
         result.shared = sharedValues
+        result.helpers = helperManager.sharedHelpers as FixtureResult<
+          TModels,
+          any,
+          THelpers
+        >['helpers']
         Object.defineProperty(result, 'shared', { enumerable: false })
+        Object.defineProperty(result, 'helpers', { enumerable: false })
         Object.defineProperty(result, 'reset', { enumerable: false })
         Object.defineProperty(result, 'update', { enumerable: false })
 
